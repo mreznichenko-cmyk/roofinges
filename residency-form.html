@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verificación de Residencia en EE.UU. | Registro Nacional de Vivienda</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Prevent any element from causing horizontal scroll */
+    html { overflow-x: hidden; }
+
+    :root {
+      --navy:   #1a2e4a;
+      --blue:   #2563eb;
+      --blue2:  #1d4ed8;
+      --sky:    #eff6ff;
+      --gold:   #f59e0b;
+      --text:   #1e293b;
+      --muted:  #64748b;
+      --border: #cbd5e1;
+      --white:  #ffffff;
+      --error:  #dc2626;
+      --success:#16a34a;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f1f5f9;
+      overflow-x: hidden;
+    }
+
+    /* ── Top announcement bar ── */
+    .announcement-bar {
+      background: var(--navy);
+      color: #94a3b8;
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 6px 16px;
+      letter-spacing: 0.02em;
+    }
+    .announcement-bar span { color: #e2e8f0; }
+
+    /* ── Header / Nav ── */
+    header {
+      background: var(--white);
+      border-bottom: 3px solid var(--gold);
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: var(--navy);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    /* SVG house icon inline */
+    .logo-icon svg { width: 22px; height: 22px; fill: var(--white); }
+    .logo-text { line-height: 1.2; min-width: 0; }
+    .logo-text strong { display: block; font-size: 1rem; color: var(--navy); letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .logo-text span  { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+
+    nav { display: flex; gap: 6px; }
+    nav a {
+      font-size: 0.82rem; font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: color .15s, background .15s;
+    }
+    nav a:hover { color: var(--blue); background: var(--sky); }
+    .nav-cta {
+      background: var(--blue) !important;
+      color: var(--white) !important;
+      padding: 7px 16px !important;
+    }
+    .nav-cta:hover { background: var(--blue2) !important; }
+
+    /* ── Hero ── */
+    .hero {
+      /* Layered CSS house-suburb background */
+      background:
+        linear-gradient(to bottom, rgba(15,30,55,.55) 0%, rgba(15,30,55,.25) 55%, rgba(15,30,55,.6) 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='460'%3E%3C!-- sky gradient --%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2338bdf8'/%3E%3Cstop offset='1' stop-color='%23bae6fd'/%3E%3C/linearGradient%3E%3ClinearGradient id='gr' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2386efac'/%3E%3Cstop offset='1' stop-color='%2322c55e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='460' fill='url(%23sky)'/%3E%3C!-- sun --%3E%3Ccircle cx='950' cy='80' r='55' fill='%23fef08a' opacity='.9'/%3E%3C!-- clouds --%3E%3Cellipse cx='200' cy='90' rx='90' ry='32' fill='white' opacity='.85'/%3E%3Cellipse cx='270' cy='80' rx='60' ry='25' fill='white' opacity='.9'/%3E%3Cellipse cx='700' cy='110' rx='75' ry='28' fill='white' opacity='.8'/%3E%3Cellipse cx='760' cy='100' rx='50' ry='22' fill='white' opacity='.85'/%3E%3C!-- ground strip --%3E%3Crect y='340' width='1200' height='120' fill='url(%23gr)'/%3E%3C!-- road --%3E%3Crect x='0' y='400' width='1200' height='60' fill='%23475569'/%3E%3Crect x='0' y='425' width='1200' height='4' fill='%23fbbf24' stroke='none'/%3E%3C!-- dashes --%3E%3Crect x='50'  y='425' width='60' height='4' fill='%23475569'/%3E%3Crect x='200' y='425' width='60' height='4' fill='%23475569'/%3E%3Crect x='350' y='425' width='60' height='4' fill='%23475569'/%3E%3Crect x='500' y='425' width='60' height='4' fill='%23475569'/%3E%3Crect x='650' y='425' width='60' height='4' fill='%23475569'/%3E%3Crect x='800' y='425' width='60' height='4' fill='%23475569'/%3E%3Crect x='950' y='425' width='60' height='4' fill='%23475569'/%3E%3Crect x='1100' y='425' width='60' height='4' fill='%23475569'/%3E%3C!-- HOUSE 1 (large, center-left) --%3E%3Crect x='180' y='220' width='200' height='135' fill='%23fef9c3'/%3E%3Cpolygon points='155,220 280,120 405,220' fill='%23dc2626'/%3E%3C!-- chimney --%3E%3Crect x='340' y='140' width='22' height='50' fill='%23991b1b'/%3E%3Crect x='338' y='136' width='26' height='8' fill='%23991b1b'/%3E%3C!-- door --%3E%3Crect x='255' y='290' width='50' height='65' fill='%2392400e' rx='2'/%3E%3Ccircle cx='298' cy='322' r='4' fill='%23fbbf24'/%3E%3C!-- windows --%3E%3Crect x='198' y='248' width='45' height='40' fill='%23bae6fd' rx='2'/%3E%3Crect x='316' y='248' width='45' height='40' fill='%23bae6fd' rx='2'/%3E%3C!-- window pane crosses --%3E%3Crect x='220' y='248' width='2' height='40' fill='white' opacity='.6'/%3E%3Crect x='198' y='268' width='45' height='2' fill='white' opacity='.6'/%3E%3Crect x='338' y='248' width='2' height='40' fill='white' opacity='.6'/%3E%3Crect x='316' y='268' width='45' height='2' fill='white' opacity='.6'/%3E%3C!-- garage --%3E%3Crect x='380' y='270' width='80' height='85' fill='%23e2e8f0'/%3E%3Crect x='385' y='275' width='70' height='75' fill='%23cbd5e1' rx='1'/%3E%3Crect x='385' y='295' width='70' height='2' fill='%2394a3b8'/%3E%3Crect x='385' y='315' width='70' height='2' fill='%2394a3b8'/%3E%3Crect x='385' y='335' width='70' height='2' fill='%2394a3b8'/%3E%3C!-- HOUSE 2 (right) --%3E%3Crect x='680' y='240' width='185' height='120' fill='%23fce7f3'/%3E%3Cpolygon points='658,240 773,148 888,240' fill='%234338ca'/%3E%3C!-- door --%3E%3Crect x='750' y='298' width='46' height='62' fill='%23713f12' rx='2'/%3E%3Ccircle cx='789' cy='329' r='3.5' fill='%23fbbf24'/%3E%3C!-- windows --%3E%3Crect x='688' y='260' width='42' height='38' fill='%23bae6fd' rx='2'/%3E%3Crect x='815' y='260' width='42' height='38' fill='%23bae6fd' rx='2'/%3E%3Crect x='709' y='260' width='2' height='38' fill='white' opacity='.6'/%3E%3Crect x='688' y='279' width='42' height='2' fill='white' opacity='.6'/%3E%3Crect x='836' y='260' width='2' height='38' fill='white' opacity='.6'/%3E%3Crect x='815' y='279' width='42' height='2' fill='white' opacity='.6'/%3E%3C!-- HOUSE 3 (small, far right) --%3E%3Crect x='950' y='268' width='140' height='100' fill='%23d1fae5'/%3E%3Cpolygon points='932,268 1020,196 1108,268' fill='%23065f46'/%3E%3Crect x='994' y='310' width='38' height='58' fill='%23422006' rx='2'/%3E%3Ccircle cx='1026' cy='338' r='3' fill='%23fbbf24'/%3E%3Crect x='956' y='282' width='36' height='32' fill='%23bae6fd' rx='2'/%3E%3Crect x='1060' y='282' width='36' height='32' fill='%23bae6fd' rx='2'/%3E%3C!-- trees --%3E%3Ccircle cx='450' cy='300' r='36' fill='%2316a34a'/%3E%3Crect x='446' y='330' width='8' height='28' fill='%2392400e'/%3E%3Ccircle cx='455' cy='293' r='26' fill='%2322c55e'/%3E%3Ccircle cx='630' cy='310' r='30' fill='%2316a34a'/%3E%3Crect x='626' y='336' width='8' height='24' fill='%2392400e'/%3E%3Ccircle cx='635' cy='302' r='22' fill='%2322c55e'/%3E%3Ccircle cx='880' cy='308' r='28' fill='%2316a34a'/%3E%3Crect x='876' y='332' width='8' height='22' fill='%2392400e'/%3E%3Ccircle cx='885' cy='300' r='20' fill='%2322c55e'/%3E%3C!-- sidewalk --%3E%3Crect x='0' y='394' width='1200' height='10' fill='%2394a3b8'/%3E%3C/svg%3E") center/cover no-repeat;
+      padding: 72px 24px 80px;
+      text-align: center;
+      color: var(--white);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(4px);
+    }
+    .hero-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: inline-block;
+    }
+    .hero h1 {
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: -.02em;
+      text-shadow: 0 2px 12px rgba(0,0,0,.35);
+      max-width: 720px;
+      margin: 0 auto 14px;
+    }
+    .hero p {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: rgba(255,255,255,.88);
+      max-width: 520px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      backdrop-filter: blur(4px);
+    }
+    .trust-badge svg { width: 14px; height: 14px; fill: var(--gold); flex-shrink: 0; }
+
+    /* ── Main layout ── */
+    main {
+      flex: 1;
+      max-width: 1140px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 56px 24px 64px;
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 52px;
+      align-items: start;
+    }
+
+    /* ── Info column ── */
+    .info-col h2 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+      margin-bottom: 14px;
+    }
+    .info-col p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .step-list { list-style: none; display: flex; flex-direction: column; gap: 18px; margin-bottom: 32px; }
+    .step-item { display: flex; gap: 14px; align-items: flex-start; }
+    .step-num {
+      width: 34px; height: 34px; flex-shrink: 0;
+      background: var(--blue);
+      color: var(--white);
+      border-radius: 50%;
+      font-size: 0.8rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-text strong { display: block; font-size: 0.88rem; color: var(--text); margin-bottom: 2px; }
+    .step-text span   { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    .info-callout {
+      background: var(--sky);
+      border-left: 4px solid var(--blue);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      color: #1e40af;
+      line-height: 1.6;
+    }
+
+    /* ── Form card ── */
+    .form-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,.07), 0 10px 40px -8px rgba(0,0,0,.12);
+      overflow: hidden;
+      position: sticky;
+      top: 88px;
+    }
+    .form-card-header {
+      background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 100%);
+      padding: 24px 28px;
+    }
+    .form-card-header h3 {
+      color: var(--white);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .form-card-header p {
+      color: #94a3b8;
+      font-size: 0.78rem;
+    }
+    .form-body { padding: 28px; }
+
+    .form-group { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 7px;
+      letter-spacing: .01em;
+    }
+    label .req { color: var(--error); margin-left: 2px; }
+
+    input, select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      /* 16px minimum prevents iOS Safari from auto-zooming on focus */
+      font-size: 1rem;
+      color: var(--text);
+      background: var(--white);
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--muted);
+    }
+
+    /* Validation states */
+    .field-error input, .field-error select { border-color: var(--error); }
+    .field-error input:focus, .field-error select:focus {
+      box-shadow: 0 0 0 3px rgba(220,38,38,.12);
+    }
+    .error-msg {
+      display: none;
+      font-size: 0.75rem;
+      color: var(--error);
+      margin-top: 5px;
+    }
+    .field-error .error-msg { display: block; }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: 13px 20px;
+      /* min-height ensures a comfortable 48px touch target on mobile */
+      min-height: 48px;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .01em;
+      transition: background .15s, transform .1s, box-shadow .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 6px;
+      /* Prevent text from being too small to read on any device */
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-submit:hover { background: var(--blue2); box-shadow: 0 4px 14px rgba(37,99,235,.35); }
+    .btn-submit:active { transform: scale(.98); }
+    .btn-submit:disabled { background: #93c5fd; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-submit svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* Spinner */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,.35);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .loading .spinner { display: block; }
+    .loading .btn-icon { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Status panels */
+    .status-panel {
+      display: none;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      animation: fadeIn .35s ease;
+    }
+    .status-panel.processing {
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      color: #1e40af;
+    }
+    .status-panel.success {
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      color: #14532d;
+    }
+    .status-panel strong { display: block; font-size: 0.9rem; margin-bottom: 4px; }
+    .status-icon { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Progress dots */
+    .dots span {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #3b82f6;
+      margin: 0 2px;
+      animation: dot-bounce .9s ease-in-out infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: .15s; }
+    .dots span:nth-child(3) { animation-delay: .3s; }
+    @keyframes dot-bounce {
+      0%, 80%, 100% { transform: scale(.7); opacity: .5; }
+      40%            { transform: scale(1.2); opacity: 1; }
+    }
+
+    /* Fine print */
+    .fine-print {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+    .fine-print a { color: var(--muted); text-decoration: underline; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      background: var(--navy);
+      color: var(--white);
+      padding: 28px 24px;
+    }
+    .stats-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 24px;
+      text-align: center;
+    }
+    .stat-item strong { display: block; font-size: 1.7rem; font-weight: 800; color: var(--gold); }
+    .stat-item span   { font-size: 0.75rem; color: #94a3b8; letter-spacing: .04em; text-transform: uppercase; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      font-size: 0.77rem;
+      color: var(--muted);
+    }
+    .footer-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 16px; }
+    .footer-links a { color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--blue); text-decoration: underline; }
+    .footer-copy { color: #94a3b8; font-size: 0.72rem; margin-top: 8px; }
+
+    /* ── Responsive ── */
+
+    /* ---- Tablet (≤ 860px): single column ---- */
+    @media (max-width: 860px) {
+      main {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 36px 20px 48px;
+      }
+      /* Form card first on mobile — users want the form, not the explainer */
+      .info-col  { order: 2; }
+      .form-card { order: 1; position: static; }
+      nav { display: none; }
+    }
+
+    /* ---- Mobile (≤ 600px) ---- */
+    @media (max-width: 600px) {
+      /* Announcement bar: allow wrapping, tighter text */
+      .announcement-bar {
+        font-size: 0.68rem;
+        padding: 5px 12px;
+        white-space: normal;
+        line-height: 1.4;
+      }
+
+      /* Header */
+      .header-inner { padding: 0 16px; height: 58px; }
+      .logo-text strong { font-size: 0.88rem; }
+      /* Hide subtitle line — too cramped on small screens */
+      .logo-text span { display: none; }
+
+      /* Hero */
+      .hero { padding: 40px 16px 48px; }
+      .hero p { font-size: 0.88rem; margin-bottom: 20px; }
+      .trust-badges { gap: 8px; }
+      .trust-badge  { font-size: 0.7rem; padding: 5px 10px; gap: 5px; }
+
+      /* Main content area */
+      main { padding: 20px 16px 36px; gap: 20px; }
+
+      /* Info column */
+      .info-col h2 { font-size: 1.2rem; }
+      .info-col p  { font-size: 0.85rem; margin-bottom: 20px; }
+      .step-list   { gap: 14px; margin-bottom: 24px; }
+      .step-text strong { font-size: 0.85rem; }
+      .step-text span   { font-size: 0.78rem; }
+      .info-callout     { font-size: 0.78rem; }
+
+      /* Form card */
+      .form-card-header { padding: 18px 20px; }
+      .form-card-header h3 { font-size: 0.98rem; }
+      .form-body { padding: 20px; }
+      .form-group { margin-bottom: 16px; }
+      label { font-size: 0.85rem; }
+
+      /* Larger touch-friendly select arrow hit area */
+      .select-wrap::after { right: 16px; }
+
+      /* Status panels */
+      .status-panel { padding: 14px 16px; font-size: 0.82rem; }
+
+      /* Stats: 2×2 grid instead of a single row */
+      .stats-bar { padding: 20px 16px; }
+      .stats-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px 8px;
+      }
+      .stat-item strong { font-size: 1.35rem; }
+      .stat-item span   { font-size: 0.68rem; }
+
+      /* Footer */
+      footer { padding: 24px 16px; }
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+      .footer-links { gap: 10px; font-size: 0.75rem; }
+      .footer-copy  { font-size: 0.68rem; }
+
+      /* Fine print */
+      .fine-print { font-size: 0.68rem; margin-top: 14px; }
+    }
+
+    /* ---- Very small phones (≤ 390px, e.g. iPhone SE) ---- */
+    @media (max-width: 390px) {
+      .hero h1 { font-size: 1.45rem; letter-spacing: -.01em; }
+      .hero p  { font-size: 0.83rem; }
+      /* Stack trust badges vertically so they don't crowd */
+      .trust-badges { flex-direction: column; align-items: center; gap: 6px; }
+      .trust-badge  { width: 100%; max-width: 260px; justify-content: center; }
+
+      .form-card-header { padding: 14px 16px; }
+      .form-body { padding: 16px; }
+      .btn-submit { font-size: 0.95rem; }
+      .stat-item strong { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="announcement-bar">
+  Programa Oficial de Verificación de Residencia en EE.UU. &mdash; <span>Seguro y Confidencial</span>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">
+        <!-- House SVG icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 9.5L12 3l9 6.5V21H15v-5h-6v5H3V9.5z"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <strong>Registro Nacional de Vivienda</strong>
+        <span>Servicios de Residencia en EE.UU.</span>
+      </div>
+    </a>
+    <nav>
+      <a href="#">Acerca de</a>
+      <a href="#">Servicios</a>
+      <a href="#">Elegibilidad</a>
+      <a href="#">Preguntas</a>
+      <a href="#" class="nav-cta">Comenzar</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">Portal de Verificación de Residencia</div>
+  <h1>Verifica Tu Residencia Estatal en EE.UU. en Minutos</h1>
+  <p>
+    Completa el formulario a continuación para enviar tu información de residencia de forma segura.
+    Los resultados generalmente están disponibles en un día hábil.
+  </p>
+  <div class="trust-badges">
+    <div class="trust-badge">
+      <svg viewBox="0 0 20 20"><path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.31L10 13.27l-4.77 2.43.91-5.31L2.27 6.62l5.34-.78L10 1z"/></svg>
+      Cifrado SSL de 256 bits
+    </div>
+    <div class="trust-badge">
+      <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm.75 11.5h-1.5v-5h1.5v5zm0-6.5h-1.5V5.5h1.5V7z"/></svg>
+      Cumple con FISMA
+    </div>
+    <div class="trust-badge">
+      <svg viewBox="0 0 20 20"><path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.31L10 13.27l-4.77 2.43.91-5.31L2.27 6.62l5.34-.78L10 1z"/></svg>
+      +500,000 Verificados
+    </div>
+  </div>
+</section>
+
+<!-- Main content -->
+<main>
+
+  <!-- Left info column -->
+  <div class="info-col">
+    <h2>Cómo Funciona el Proceso de Verificación de Residencia</h2>
+    <p>
+      Nuestro portal en línea seguro permite a los residentes de los 50 estados enviar su información
+      de residencia de forma rápida y sencilla. Sus datos se procesan confidencialmente de acuerdo
+      con las directrices de privacidad federales.
+    </p>
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <strong>Selecciona Tu Estado</strong>
+          <span>Elige el estado de EE.UU. donde resides actualmente desde el menú desplegable.</span>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>Ingresa los Años de Residencia</strong>
+          <span>Proporciona el número de años que has vivido en tu estado de residencia actual.</span>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>Envía y Recibe Confirmación</strong>
+          <span>Tu información es revisada y se envía una confirmación a tu perfil en un día hábil.</span>
+        </div>
+      </li>
+    </ul>
+    <div class="info-callout">
+      <strong>Aviso de Privacidad:</strong> Toda la información enviada está protegida bajo la Ley de
+      Privacidad de 1974 y se utiliza únicamente para fines de verificación de residencia. Sus datos
+      no serán compartidos con terceros sin su consentimiento.
+    </div>
+  </div>
+
+  <!-- Right form card -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <h3>Formulario de Verificación de Residencia</h3>
+      <p>Por favor, completa todos los campos obligatorios.</p>
+    </div>
+    <div class="form-body">
+      <form id="residencyForm" novalidate>
+
+        <!-- State dropdown -->
+        <div class="form-group" id="stateGroup">
+          <label for="state">Estado de Residencia <span class="req">*</span></label>
+          <div class="select-wrap">
+            <select id="state" name="state" autocomplete="address-level1">
+              <option value="">— Selecciona tu estado —</option>
+              <option value="AL">Alabama</option>
+              <option value="AK">Alaska</option>
+              <option value="AZ">Arizona</option>
+              <option value="AR">Arkansas</option>
+              <option value="CA">California</option>
+              <option value="CO">Colorado</option>
+              <option value="CT">Connecticut</option>
+              <option value="DE">Delaware</option>
+              <option value="FL">Florida</option>
+              <option value="GA">Georgia</option>
+              <option value="HI">Hawaii</option>
+              <option value="ID">Idaho</option>
+              <option value="IL">Illinois</option>
+              <option value="IN">Indiana</option>
+              <option value="IA">Iowa</option>
+              <option value="KS">Kansas</option>
+              <option value="KY">Kentucky</option>
+              <option value="LA">Louisiana</option>
+              <option value="ME">Maine</option>
+              <option value="MD">Maryland</option>
+              <option value="MA">Massachusetts</option>
+              <option value="MI">Michigan</option>
+              <option value="MN">Minnesota</option>
+              <option value="MS">Mississippi</option>
+              <option value="MO">Missouri</option>
+              <option value="MT">Montana</option>
+              <option value="NE">Nebraska</option>
+              <option value="NV">Nevada</option>
+              <option value="NH">New Hampshire</option>
+              <option value="NJ">New Jersey</option>
+              <option value="NM">New Mexico</option>
+              <option value="NY">New York</option>
+              <option value="NC">North Carolina</option>
+              <option value="ND">North Dakota</option>
+              <option value="OH">Ohio</option>
+              <option value="OK">Oklahoma</option>
+              <option value="OR">Oregon</option>
+              <option value="PA">Pennsylvania</option>
+              <option value="RI">Rhode Island</option>
+              <option value="SC">South Carolina</option>
+              <option value="SD">South Dakota</option>
+              <option value="TN">Tennessee</option>
+              <option value="TX">Texas</option>
+              <option value="UT">Utah</option>
+              <option value="VT">Vermont</option>
+              <option value="VA">Virginia</option>
+              <option value="WA">Washington</option>
+              <option value="WV">West Virginia</option>
+              <option value="WI">Wisconsin</option>
+              <option value="WY">Wyoming</option>
+              <option value="DC">District of Columbia</option>
+            </select>
+          </div>
+          <span class="error-msg" id="stateError">Por favor, selecciona un estado de residencia.</span>
+        </div>
+
+        <!-- Years lived -->
+        <div class="form-group" id="yearsGroup">
+          <label for="years">Años Vividos en Este Estado <span class="req">*</span></label>
+          <input
+            type="number"
+            id="years"
+            name="years"
+            placeholder="p. ej. 5"
+            min="0"
+            max="120"
+            step="1"
+            inputmode="numeric"
+          />
+          <span class="error-msg" id="yearsError">Por favor, ingresa un número válido de años (debe ser 0 o mayor).</span>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="spinner" id="spinner"></span>
+          <span id="btnIcon" class="btn-icon">
+            <!-- Arrow icon -->
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+          <span id="btnText">Enviar Solicitud de Verificación</span>
+        </button>
+
+        <!-- Processing panel -->
+        <div class="status-panel processing" id="processingPanel">
+          <span class="status-icon">&#128336;</span>
+          <strong>Procesando tu información&hellip;</strong>
+          Por favor, espera un momento mientras enviamos tus datos de residencia de forma segura.
+          <div class="dots" style="margin-top:10px;">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- Success panel -->
+        <div class="status-panel success" id="successPanel">
+          <span class="status-icon">&#10003;</span>
+          <strong>Solicitud Recibida</strong>
+          Gracias. Te proporcionaremos el resultado de tu verificación en breve. Puedes recibir
+          una notificación de seguimiento en <strong>1&ndash;2 días hábiles</strong>.
+          Tu número de referencia: <strong id="refId"></strong>
+        </div>
+
+      </form>
+
+      <p class="fine-print">
+        Al enviar este formulario aceptas nuestros
+        <a href="#">Términos de Servicio</a> y <a href="#">Política de Privacidad</a>.
+        Este portal utiliza cifrado TLS de 256 bits.
+      </p>
+    </div>
+  </div>
+
+</main>
+
+<!-- Stats bar -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <strong>50</strong>
+      <span>Estados Cubiertos</span>
+    </div>
+    <div class="stat-item">
+      <strong>500K+</strong>
+      <span>Verificaciones Procesadas</span>
+    </div>
+    <div class="stat-item">
+      <strong>&lt; 24 hrs</strong>
+      <span>Tiempo Prom. de Procesamiento</span>
+    </div>
+    <div class="stat-item">
+      <strong>99.8%</strong>
+      <span>Tasa de Aprobación</span>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <strong style="color:var(--text);font-size:.82rem;">Registro Nacional de Vivienda</strong>
+      <div class="footer-copy">&copy; 2024 NHR &bull; Todos los derechos reservados &bull; Washington, D.C.</div>
+    </div>
+    <div class="footer-links">
+      <a href="#">Política de Privacidad</a>
+      <a href="#">Términos de Uso</a>
+      <a href="#">Accesibilidad</a>
+      <a href="#">Contáctenos</a>
+      <a href="#">FOIA</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── Form validation & submission logic ── */
+
+  const form          = document.getElementById('residencyForm');
+  const stateEl       = document.getElementById('state');
+  const yearsEl       = document.getElementById('years');
+  const stateGroup    = document.getElementById('stateGroup');
+  const yearsGroup    = document.getElementById('yearsGroup');
+  const submitBtn     = document.getElementById('submitBtn');
+  const spinner       = document.getElementById('spinner');
+  const btnText       = document.getElementById('btnText');
+  const processingPanel = document.getElementById('processingPanel');
+  const successPanel  = document.getElementById('successPanel');
+  const refIdEl       = document.getElementById('refId');
+
+  // Validate state field; returns true if valid
+  function validateState() {
+    const valid = stateEl.value !== '';
+    stateGroup.classList.toggle('field-error', !valid);
+    return valid;
+  }
+
+  // Validate years field; returns true if valid
+  function validateYears() {
+    const val = parseFloat(yearsEl.value);
+    const valid = yearsEl.value.trim() !== '' && !isNaN(val) && val >= 0 && Number.isFinite(val);
+    yearsGroup.classList.toggle('field-error', !valid);
+    return valid;
+  }
+
+  // Clear errors on user interaction
+  stateEl.addEventListener('change', validateState);
+  yearsEl.addEventListener('input',  validateYears);
+
+  // Generate a random reference ID like "NHR-2024-XXXXX"
+  function generateRefId() {
+    const year = new Date().getFullYear();
+    const rand = Math.floor(10000 + Math.random() * 90000);
+    return `NHR-${year}-${rand}`;
+  }
+
+  // Main submit handler
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const stateOk = validateState();
+    const yearsOk = validateYears();
+
+    // Stop if any field is invalid
+    if (!stateOk || !yearsOk) return;
+
+    // ── Step 1: show loading state on button ──
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+    btnText.textContent = 'Enviando…';
+
+    // ── Step 2: after 1.2s show "processing" panel ──
+    setTimeout(function() {
+      processingPanel.style.display = 'block';
+    }, 1200);
+
+    // ── Step 3: after 3.8s total, hide processing, show success ──
+    setTimeout(function() {
+      // Hide loading state
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+      btnText.textContent = 'Enviar Solicitud de Verificación';
+
+      // Swap panels
+      processingPanel.style.display = 'none';
+      refIdEl.textContent = generateRefId();
+      successPanel.style.display = 'block';
+
+      // Scroll the success message into view on mobile
+      successPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // Optionally reset the form fields (keep them so user can see what they entered)
+      // form.reset();
+    }, 3800);
+  });
+</script>
+</body>
+</html>
